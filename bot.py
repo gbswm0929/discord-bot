@@ -133,12 +133,12 @@ async def update(interaction: discord.Interaction, id: str, content: str = "", u
         await interaction.response.send_message("리스트 수정 오류 발생")
 
 
-# @tree.command(name="선택", description="선택")
-# @app_commands.describe(user="선택")
-# async def select(interaction: discord.Interaction, user: discord.Member):
-#     try:
-#         await interaction.response.send_message(f"{user.name}선택")
-#     except Exception as e:
-#         await interaction.response.send_message("선택 오류 발생")
+@tree.command(name="선택", description="선택")
+@app_commands.describe(user="선택")
+async def select(interaction: discord.Interaction, user: discord.Member):
+    try:
+        await interaction.response.send_message(f"{user.name}선택")
+    except Exception as e:
+        await interaction.response.send_message("선택 오류 발생")
 
 bot.run(os.getenv("token"))
