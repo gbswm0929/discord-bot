@@ -127,18 +127,17 @@ async def select(interaction: discord.Interaction, user: discord.Member):
     await interaction.response.send_message(f"{user.name}선택")
 
 class view(discord.ui.View):
-    @discord.ui.button(label="click1", style=discord.ButtonStyle.red, emoji="⦿")
+    @discord.ui.button(label="click1", style=discord.ButtonStyle.red, emoji="😀")
     async def button_callback1(self, butotn, interaction):
         await button.response.send_message("click button1")
-    @discord.ui.button(label="click2", style=discord.ButtonStyle.red, emoji="⦿")
+    @discord.ui.button(label="click2", style=discord.ButtonStyle.purple, emoji="😃")
     async def button_callback2(self, butotn, interaction):
         await button.response.send_message("click button2")
-    @discord.ui.button(label="click3", style=discord.ButtonStyle.red, emoji="⦿")
+    @discord.ui.button(label="click3", style=discord.ButtonStyle.green, emoji="😄")
     async def button_callback3(self, butotn, interaction):
         await button.response.send_message("click button3")
 
 @tree.command(name="버튼", description="버튼")
-@app_commands.describe()
 async def select(interaction: discord.Interaction):
     await interaction.response.send_message(view=view())
 
