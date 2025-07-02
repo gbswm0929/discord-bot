@@ -121,24 +121,24 @@ async def update(interaction: discord.Interaction, id: str, content: str = "", u
             await interaction.response.send_message("목록 아이디를 찾을 수 없습니다.", ephemeral=True)
 
 
-# @tree.command(name="선택", description="선택")
-# @app_commands.describe(user="선택")
-# async def select(interaction: discord.Interaction, user: discord.Member):
-#     await interaction.response.send_message(f"{user.name}선택")
+@tree.command(name="선택", description="선택")
+@app_commands.describe(user="선택")
+async def select(interaction: discord.Interaction, user: discord.Member):
+    await interaction.response.send_message(f"{user.name}선택")
 
-# class view(discord.ui.View):
-#     @discord.ui.button(label="click1", style=discord.ButtonStyle.red, emoji="😀")
-#     async def button_callback1(self, button, interaction):
-#         await button.response.send_message("1click button")
-#     @discord.ui.button(label="click2", style=discord.ButtonStyle.blurple, emoji="😃")
-#     async def button_callback2(self, button, interaction):
-#         await button.response.send_message("2click button")
-#     @discord.ui.button(label="click3", style=discord.ButtonStyle.green, emoji="😄")
-#     async def button_callback3(self, button, interaction):
-#         await button.response.send_message("3click button")
+class view(discord.ui.View):
+    @discord.ui.button(label="click1", style=discord.ButtonStyle.red, emoji="😀")
+    async def button_callback1(self, button, interaction):
+        await button.response.send_message("1click button")
+    @discord.ui.button(label="click2", style=discord.ButtonStyle.blurple, emoji="😃")
+    async def button_callback2(self, button, interaction):
+        await button.response.send_message("2click button")
+    @discord.ui.button(label="click3", style=discord.ButtonStyle.green, emoji="😄")
+    async def button_callback3(self, button, interaction):
+        await button.response.send_message("3click button")
 
-# @tree.command(name="버튼", description="버튼")
-# async def btn(interaction: discord.Interaction):
-#     await interaction.response.send_message(view=view())
+@tree.command(name="버튼", description="버튼")
+async def btn(interaction: discord.Interaction):
+    await interaction.response.send_message(view=view())
 
 bot.run(os.getenv("token"))
