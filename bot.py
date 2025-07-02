@@ -89,7 +89,7 @@ async def list(interaction: discord.Interaction):
 @tree.command(name="리스트삭제", description="목록 삭제")
 @app_commands.describe(id="목록 아이디")
 async def delete(interaction: discord.Interaction, id: str):
-    adminid = os.getenv("admin")
+    adminid = int(os.getenv("admin"))
     if interaction.user.id == adminid:
         try:
             result = collection.delete_one({"_id" : ObjectId(id)})
