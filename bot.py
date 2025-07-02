@@ -53,37 +53,46 @@ async def on_ready():
 @tree.command(name="청소", description="메시지 삭제")
 @app_commands.describe(count="삭제할 메시지 갯수")
 async def clean(interaction: discord.Interaction, count: app_commands.Range[int, 1]):
-    if interaction.user.guild_permissions.manage_messages:
-        await interaction.channel.purge(limit=count)
-    else:
-        await interaction.response.send_message("메시지 관리 권한이 없습니다.", ephemeral=True)
+    try:
+        if interaction.user.guild_permissions.manage_messages:
+            await interaction.channel.purge(limit=count)
+        else:
+            await interaction.response.send_message("메시지 관리 권한이 없습니다.", ephemeral=True)
+    except Exception as e:
+        await interaction.response.send_message("삭제 오류 발생")
 
 
 @tree.command(name="리스트추가", description="목록 추가")
 @app_commands.describe(content="내용", user="완료")
 async def insert(interaction: discord.Interaction, content: str, user: str = ""):
-    collection.insert_one({"name": interaction.user.name, "content" : content, "user" : user})
-    await interaction.response.send_message("리스트 추가 완료", ephemeral=True)
+    try:
+        collection.insert_one({"name": interaction.user.name, "content" : content, "user" : user})
+        await interaction.response.send_message("리스트 추가 완료", ephemeral=True)
+    except Exception as e:
+            await interaction.response.send_message("리스트 추가 오류 발생")
 
 
 @tree.command(name="리스트", description="목록")
 async def list(interaction: discord.Interaction):
-    messages = collection.find().sort("_id", -1)
-    embed = discord.Embed(title="타이틀", description="설명", color=0x00ff00)
-    embed.set_footer(text="made by abc")
-    
-    count = 0
-    for msg in messages:
-        content = msg.get("content")
-        name = msg.get("name")
-        user = msg.get("user")
-        id = msg.get("_id")
-        embed.add_field(name= f"{content} ({name})" if user == "" else f"{content} ({name}) ({user})", value= id if user == "" else f"~~{id}~~", inline=False)
-        count += 1
-    if count == 0:
-        await interaction.response.send_message("리스트가 없습니다.", ephemeral=True)
-    else:
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+    try:
+        messages = collection.find().sort("_id", -1)
+        embed = discord.Embed(title="타이틀", description="설명", color=0x00ff00)
+        embed.set_footer(text="made by abc")
+        
+        count = 0
+        for msg in messages:
+            content = msg.get("content")
+            name = msg.get("name")
+            user = msg.get("user")
+            id = msg.get("_id")
+            embed.add_field(name= f"{content} ({name})" if user == "" else f"{content} ({name}) ({user})", value= id if user == "" else f"~~{id}~~", inline=False)
+            count += 1
+        if count == 0:
+            await interaction.response.send_message("리스트가 없습니다.", ephemeral=True)
+        else:
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+    except Exception as e:
+        await interaction.response.send_message("리스트 오류 발생")
 
 
 @tree.command(name="리스트삭제", description="목록 삭제")
@@ -98,7 +107,7 @@ async def delete(interaction: discord.Interaction, id: str):
             else:
                 await interaction.response.send_message("목록 아이디를 찾을 수 없습니다.", ephemeral=True)
         except Exception as e:
-            await interaction.response.send_message("오류 발생", ephemeral=True)
+            await interaction.response.send_message("리스트 삭제 오류 발생")
     else:
         await interaction.response.send_message("삭제 권한이 없습니다.", ephemeral=True)
         return
@@ -107,38 +116,29 @@ async def delete(interaction: discord.Interaction, id: str):
 @tree.command(name="리스트수정", description="목록 수정")
 @app_commands.describe(id="목록 아이디", content="내용", user="완료")
 async def update(interaction: discord.Interaction, id: str, content: str = "", user: str = ""):
-    if content == "" and user == "":
-        await interaction.response.send_message("아무 것도 입력하지 않았습니다.", ephemeral=True)
-    else:
-        message = collection.find_one({"_id": ObjectId(id)})
-        if message:
-            if content == "":
-                content = message.get("content")
-            result = collection.update_one({"_id" : ObjectId(id)}, {"$set" : {"content" : content, "user" : user}})
-            if result.matched_count == 1:
-                await interaction.response.send_message("목록 수정 완료", ephemeral=True)
+    try:
+        if content == "" and user == "":
+            await interaction.response.send_message("아무 것도 입력하지 않았습니다.", ephemeral=True)
         else:
-            await interaction.response.send_message("목록 아이디를 찾을 수 없습니다.", ephemeral=True)
+            message = collection.find_one({"_id": ObjectId(id)})
+            if message:
+                if content == "":
+                    content = message.get("content")
+                result = collection.update_one({"_id" : ObjectId(id)}, {"$set" : {"content" : content, "user" : user}})
+                if result.matched_count == 1:
+                    await interaction.response.send_message("목록 수정 완료", ephemeral=True)
+            else:
+                await interaction.response.send_message("목록 아이디를 찾을 수 없습니다.", ephemeral=True)
+    except Exception as e:
+        await interaction.response.send_message("리스트 수정 오류 발생")
 
 
 @tree.command(name="선택", description="선택")
 @app_commands.describe(user="선택")
 async def select(interaction: discord.Interaction, user: discord.Member):
-    await interaction.response.send_message(f"{user.name}선택")
-
-class view(discord.ui.View):
-    @discord.ui.button(label="click1", style=discord.ButtonStyle.red, emoji="😀")
-    async def button_callback1(self, button, interaction):
-        await button.response.send_message("1click button")
-    @discord.ui.button(label="click2", style=discord.ButtonStyle.blurple, emoji="😃")
-    async def button_callback2(self, button, interaction):
-        await button.response.send_message("2click button")
-    @discord.ui.button(label="click3", style=discord.ButtonStyle.green, emoji="😄")
-    async def button_callback3(self, button, interaction):
-        await button.response.send_message("3click button")
-
-@tree.command(name="버튼", description="버튼")
-async def btn(interaction: discord.Interaction):
-    await interaction.response.send_message(view=view())
+    try:
+        await interaction.response.send_message(f"{user.name}선택")
+    except Exception as e:
+        await interaction.response.send_message("선택 오류 발생")
 
 bot.run(os.getenv("token"))
