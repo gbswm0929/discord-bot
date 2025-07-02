@@ -126,22 +126,22 @@ async def update(interaction: discord.Interaction, id: str, content: str = "", u
 async def select(interaction: discord.Interaction, user: discord.Member):
     await interaction.response.send_message(f"{user.name}선택")
 
-# class view(discord.ui.View):
-#     @discord.ui.button(label="click1", style=discord.ButtonStyle.red, emoji="😀")
-#     async def button_callback1(self, button, interaction):
-#         self.value = 1
-#         await button.response.send_message(f"{self.value}click button")
-#     @discord.ui.button(label="click2", style=discord.ButtonStyle.blurple, emoji="😃")
-#     async def button_callback2(self, button, interaction):
-#         self.value = 2
-#         await button.response.send_message(f"{self.value}click button")
-#     @discord.ui.button(label="click3", style=discord.ButtonStyle.green, emoji="😄")
-#     async def button_callback3(self, button, interaction):
-#         self.value = 3
-#         await button.response.send_message(f"{self.value}click button")
+class view(discord.ui.View):
+    @discord.ui.button(label="click1", style=discord.ButtonStyle.red, emoji="😀")
+    async def button_callback1(self, button, interaction):
+        self.value = 1
+        await button.response.send_message(f"{self.value}click button")
+    @discord.ui.button(label="click2", style=discord.ButtonStyle.blurple, emoji="😃")
+    async def button_callback2(self, button, interaction):
+        self.value = 2
+        await button.response.send_message(f"{self.value}click button")
+    @discord.ui.button(label="click3", style=discord.ButtonStyle.green, emoji="😄")
+    async def button_callback3(self, button, interaction):
+        self.value = 3
+        await button.response.send_message(f"{self.value}click button")
 
-# @tree.command(name="버튼", description="버튼")
-# async def select(interaction: discord.Interaction):
-#     await interaction.response.send_message(view=view())
+@tree.command(name="버튼", description="버튼")
+async def select(interaction: discord.Interaction):
+    await interaction.response.send_message(view=view())
 
 bot.run(os.getenv("token"))
