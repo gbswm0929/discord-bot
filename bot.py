@@ -30,8 +30,8 @@ uri = os.getenv("uri")
 client = MongoClient(uri)
 
 async def ping_self():
-    await client.wait_until_ready()
-    while not client.is_closed():
+    await bot.wait_until_ready()
+    while not bot.is_closed():
         try:
             async with aiohttp.ClientSession() as s:
                 await s.get(os.environ["https://mute-gianina-gbswst0929-dd427436.koyeb.app"])
@@ -46,8 +46,8 @@ collection = db["test"]
 async def on_ready():
     await tree.sync()
     print("준비")
-    client.loop.create_task(start_web_server())
-    client.loop.create_task(ping_self())
+    bot.loop.create_task(start_web_server())
+    bot.loop.create_task(ping_self())
 
 
 @tree.command(name="청소", description="메시지 삭제")
