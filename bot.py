@@ -142,8 +142,7 @@ async def select(interaction: discord.Interaction, user: discord.Member):
         await interaction.response.send_message("선택 오류 발생")
 
 
-@tree.command(name="집", description="선택")
-@app_commands.describe(user="선택")
+@tree.command(name="집", description="집")
 async def select(interaction: discord.Interaction):
     try:
         await interaction.response.send_message("가고 싶다")
