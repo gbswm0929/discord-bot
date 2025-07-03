@@ -149,4 +149,13 @@ async def select(interaction: discord.Interaction):
     except Exception as e:
         await interaction.response.send_message("오류 발생")
 
+
+@tree.command(name="말", description="horse")
+@app_commands.describe(content="내용")
+async def select(interaction: discord.Interaction, content: str):
+    try:
+        await interaction.response.send_message(content)
+    except Exception as e:
+        await interaction.response.send_message("오류 발생")
+
 bot.run(os.getenv("token"))
