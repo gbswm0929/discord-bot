@@ -76,8 +76,8 @@ async def insert(interaction: discord.Interaction, content: str, user: str = "")
 async def list(interaction: discord.Interaction):
     try:
         messages = collection.find().sort("_id", -1)
-        embed = discord.Embed(title="타이틀", description="설명", color=0x00ff00)
-        embed.set_footer(text="made by abc")
+        embed = discord.Embed(title="할일", description="해야할 일", color=0x00ff00)
+        embed.set_footer(text="made by")
         
         count = 0
         for msg in messages:
