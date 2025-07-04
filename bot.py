@@ -45,6 +45,7 @@ collection = db["test"]
 @bot.event
 async def on_ready():
     await tree.sync()
+    await bot.change_presence(activity=discord.Game("집 생각"))
     print("준비")
     bot.loop.create_task(start_web_server())
     bot.loop.create_task(ping_self())
@@ -85,7 +86,7 @@ async def list(interaction: discord.Interaction):
             name = msg.get("name")
             user = msg.get("user")
             id = msg.get("_id")
-            embed.add_field(name= f"{content} ({name})" if user == "" else f"{content} ({name}) ({user})", value= id if user == "" else f"~~{id}~~", inline=False)
+            embed.add_field(name= f"{name} ({id})" if user == "" else f"{name} ({user}) ~~({id})~~", value= content, inline=False)
             count += 1
         if count == 0:
             await interaction.response.send_message("리스트가 없습니다.", ephemeral=True)
@@ -99,7 +100,8 @@ async def list(interaction: discord.Interaction):
 @app_commands.describe(id="목록 아이디")
 async def delete(interaction: discord.Interaction, id: str):
     adminid = int(os.getenv("admin"))
-    if interaction.user.id == adminid:
+    adminid2 = int(os.getenv("admin2"))
+    if interaction.user.id == adminid or interaction.user.id == adminid2:
         try:
             result = collection.delete_one({"_id" : ObjectId(id)})
             if result.deleted_count == 1:
@@ -117,18 +119,15 @@ async def delete(interaction: discord.Interaction, id: str):
 @app_commands.describe(id="목록 아이디", content="내용", user="완료")
 async def update(interaction: discord.Interaction, id: str, content: str = "", user: str = ""):
     try:
-        if content == "" and user == "":
-            await interaction.response.send_message("아무 것도 입력하지 않았습니다.", ephemeral=True)
+        message = collection.find_one({"_id": ObjectId(id)})
+        if message:
+            if content == "":
+                content = message.get("content")
+            result = collection.update_one({"_id" : ObjectId(id)}, {"$set" : {"content" : content, "user" : user}})
+            if result.matched_count == 1:
+                await interaction.response.send_message("목록 수정 완료", ephemeral=True)
         else:
-            message = collection.find_one({"_id": ObjectId(id)})
-            if message:
-                if content == "":
-                    content = message.get("content")
-                result = collection.update_one({"_id" : ObjectId(id)}, {"$set" : {"content" : content, "user" : user}})
-                if result.matched_count == 1:
-                    await interaction.response.send_message("목록 수정 완료", ephemeral=True)
-            else:
-                await interaction.response.send_message("목록 아이디를 찾을 수 없습니다.", ephemeral=True)
+            await interaction.response.send_message("목록 아이디를 찾을 수 없습니다.", ephemeral=True)
     except Exception as e:
         await interaction.response.send_message("리스트 수정 오류 발생")
 
