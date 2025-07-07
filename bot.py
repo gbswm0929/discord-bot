@@ -235,10 +235,11 @@ async def select(interaction: discord.Interaction):
                     data = await response.json()
                     pretty = json.dumps(data, ensure_ascii=False, indent=2)
                     # print(pretty["mealServiceDietInfo"]["head"]["list_total_count"])
-                    a = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
-                    b = data["mealServiceDietInfo"][0]["row"][0]["DDISH_NM"]
-                    print(a)
-                    await interaction.response.send_message(f"```{b}```")
+                    # a = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
+                    # b = data["mealServiceDietInfo"][0]["row"][0]["DDISH_NM"]
+                    # print(a)
+                    # await interaction.response.send_message(f"```{b}```")
+                    print(data["mealServiceDietInfo"][0]["head"][0]["list_total_count"])
                 else:
                     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
