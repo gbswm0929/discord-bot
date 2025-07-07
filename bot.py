@@ -242,17 +242,23 @@ async def select(interaction: discord.Interaction):
                     pretty = json.dumps(data, ensure_ascii=False, indent=2)
                     count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
                     if count == 1:
+                        type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
                         text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
-                        await interaction.response.send_message(f"```{text1}```")
+                        await interaction.response.send_message(f"{type1}```{text1}```")
                     elif count == 2:
+                        type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
+                        type2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["MMEAL_SC_NM"])
                         text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
                         text2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"])
-                        await interaction.response.send_message(f"```{text1}\n{text2}```")
+                        await interaction.response.send_message(f"{type1}```{text1}```\n{type2}```{text2}```")
                     elif count == 3:
+                        type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
+                        type2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["MMEAL_SC_NM"])
+                        type3 = clean_text(data["mealServiceDietInfo"][1]["row"][2]["MMEAL_SC_NM"])
                         text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
                         text2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"])
                         text3 = clean_text(data["mealServiceDietInfo"][1]["row"][2]["DDISH_NM"])
-                        await interaction.response.send_message(f"```{text1}\n{text2}\n{text3}```")
+                        await interaction.response.send_message(f"{type1}```{text1}```\n{type2}```{text2}```\n{type3}```{text3}```")
                 else:
                     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
