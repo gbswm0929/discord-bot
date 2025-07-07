@@ -235,7 +235,7 @@ async def select(interaction: discord.Interaction):
                     data = await response.json()
                     pretty = json.dumps(data, ensure_ascii=False, indent=2)
                     # print(pretty["mealServiceDietInfo"]["head"]["list_total_count"])
-                    print(pretty["mealServiceDietInfo"])
+                    print(data.get("mealServiceDietInfo"))
                     # if len(pretty) > 1900:
                     #     await interaction.response.send_message(f"```{pretty[:1900]}```")
                     # else:
