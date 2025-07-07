@@ -234,7 +234,7 @@ async def select(interaction: discord.Interaction, title: str):
 async def select(interaction: discord.Interaction):
     try:
         today = datetime.now().strftime('%Y%m%d')
-        url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE=R10&SD_SCHUL_CODE=8750829&MLSV_YMD={today}&Type=Json"
+        url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status == 200:
@@ -244,13 +244,13 @@ async def select(interaction: discord.Interaction):
                     if count == 1:
                         type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
                         text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
-                        await interaction.response.send_message(f"{type1}```{text1}```")
+                        await interaction.response.send_message(f"**{type1}**```{text1}```")
                     elif count == 2:
                         type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
                         type2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["MMEAL_SC_NM"])
                         text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
                         text2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"])
-                        await interaction.response.send_message(f"{type1}```{text1}```\n{type2}```{text2}```")
+                        await interaction.response.send_message(f"**{type1}**```{text1}```\n**{type2}**```{text2}```")
                     elif count == 3:
                         type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
                         type2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["MMEAL_SC_NM"])
@@ -258,7 +258,7 @@ async def select(interaction: discord.Interaction):
                         text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
                         text2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"])
                         text3 = clean_text(data["mealServiceDietInfo"][1]["row"][2]["DDISH_NM"])
-                        await interaction.response.send_message(f"{type1}```{text1}```\n{type2}```{text2}```\n{type3}```{text3}```")
+                        await interaction.response.send_message(f"**{type1}**```{text1}```\n**{type2}**```{text2}```\n**{type3}**```{text3}```")
                 else:
                     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
