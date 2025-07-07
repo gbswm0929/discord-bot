@@ -229,7 +229,6 @@ async def select(interaction: discord.Interaction):
     try:
         today = datetime.now().strftime('%Y%m%d')
         url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE=R10&SD_SCHUL_CODE=8750829&MLSV_YMD={today}&Type=Json"
-        await interaction.response.send_message("서버에서만 이용 가능합니다.", ephemeral=True)
         async with url as response:
             if response.status == 200:
                 data = await response.json()
