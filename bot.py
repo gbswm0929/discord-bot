@@ -234,12 +234,12 @@ async def select(interaction: discord.Interaction):
                 if response.status == 200:
                     data = await response.json()
                     pretty = json.dumps(data, ensure_ascii=False, indent=2)
-                    # print(pretty["mealServiceDietInfo"]["head"]["list_total_count"])
-                    # a = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
-                    # b = data["mealServiceDietInfo"][0]["row"][0]["DDISH_NM"]
-                    # print(a)
-                    # await interaction.response.send_message(f"```{b}```")
-                    print(data["mealServiceDietInfo"][0]["head"][0]["list_total_count"])
+                    if data["mealServiceDietInfo"][0]["head"][0]["list_total_count"] == 1:
+                        await interaction.response.send_message(f"```{data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"]}```")
+                    elif data["mealServiceDietInfo"][0]["head"][0]["list_total_count"] == 2:
+                        await interaction.response.send_message(f"```{data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"]}\n{data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"]}```")
+                    elif data["mealServiceDietInfo"][0]["head"][0]["list_total_count"] == 3:
+                        await interaction.response.send_message(f"```{data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"]}\n{data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"]}\n{data["mealServiceDietInfo"][1]["row"][2]["DDISH_NM"]}```")
                 else:
                     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
