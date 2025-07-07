@@ -2,3 +2,4 @@ discord.py
 asyncio
 pymongo
 python-dotenv
+pytz

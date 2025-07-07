@@ -19,6 +19,7 @@ import os
 from dotenv import load_dotenv
 import json
 from datetime import datetime
+import pytz
 import re
 
 load_dotenv()
@@ -233,8 +234,8 @@ async def select(interaction: discord.Interaction, title: str):
 @tree.command(name="급식", description="급식")
 async def select(interaction: discord.Interaction):
     try:
-        today = datetime.now().strftime('%Y%m%d')
-        print(today)
+        seoul = pytz.timezone("Asia/Seoul")
+        today = datetime.now(seoul).strftime('%Y%m%d')
         url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
@@ -264,13 +265,5 @@ async def select(interaction: discord.Interaction):
                     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
         await interaction.response.send_message(f"오류 발생 {e}", ephemeral=True)
-
-
-@tree.command(name="현재시간", description="현재시간")
-async def select(interaction: discord.Interaction):
-    try:
-        await interaction.response.send_message(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
-    except Exception as e:
-        await interaction.response.send_message("오류 발생")
 
 bot.run(os.getenv("token"))
