@@ -235,7 +235,10 @@ async def select(interaction: discord.Interaction):
                 # print(response)
                     data = await response.json()
                     pretty = json.dumps(data, ensure_ascii=False, indent=2)
-                    await interaction.response.send_message(f"```{pretty}```")
+                    if len(pretty) > 1900:
+                        await interaction.response.send_message(f"```{pretty[:1900]}```")
+                    else:
+                        await interaction.response.send_message(f"```{pretty}```")
                 else:
                     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
