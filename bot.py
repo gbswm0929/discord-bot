@@ -228,14 +228,14 @@ async def select(interaction: discord.Interaction, title: str):
 async def select(interaction: discord.Interaction):
     try:
         today = datetime.now().strftime('%Y%m%d')
-        print(today)
         url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE=R10&SD_SCHUL_CODE=8750829&MLSV_YMD={today}&Type=Json"
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status == 200:
-                    data = await response.json()
-                    pretty = json.dumps(data, ensure_ascii=False, indent=2)
-                    await interaction.response.send_message(f"```{pretty}```")
+                    print(response)
+                    # data = await response.json()
+                    # pretty = json.dumps(data, ensure_ascii=False, indent=2)
+                    # await interaction.response.send_message(f"```{pretty}```")
                 else:
                     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
