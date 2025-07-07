@@ -17,8 +17,20 @@ from pymongo import MongoClient
 from bson import ObjectId
 import os
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
+DATA_FILE = "data.json"
+
+def load_data():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {}
+
+def save_data(data):
+    with open(DATA_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -154,6 +166,59 @@ async def select(interaction: discord.Interaction):
 async def select(interaction: discord.Interaction, content: str):
     try:
         await interaction.response.send_message(content)
+    except Exception as e:
+        await interaction.response.send_message("오류 발생")
+
+
+@tree.command(name="학습", description="배움")
+@app_commands.describe(title="말", content="내용")
+async def select(interaction: discord.Interaction, title: str, content: str):
+    try:
+        data = load_data()
+        data[title] = content
+        save_data(data)
+        await interaction.response.send_message("학습 완료")
+    except Exception as e:
+        await interaction.response.send_message("오류 발생")
+
+
+@tree.command(name="학습보기", description="배움")
+@app_commands.describe(title="말")
+async def select(interaction: discord.Interaction, title: str):
+    try:
+        data = load_data()
+        if title in data:
+            await interaction.response.send_message(data[title])
+        else:
+            await interaction.response.send_message("이거는 안 배웠어요..")
+    except Exception as e:
+        await interaction.response.send_message("오류 발생")
+
+
+@tree.command(name="학습전체보기", description="배움")
+async def select(interaction: discord.Interaction):
+    try:
+        data = load_data()
+        if data:
+            result = '\n'.join([f'- {k}: {v}' for k, v in data.items()])
+            await interaction.response.send_message(result)
+        else:
+            await interaction.response.send_message("배운적이 없어요..")
+    except Exception as e:
+        await interaction.response.send_message("오류 발생")
+
+
+@tree.command(name="학습삭제", description="배움")
+@app_commands.describe(title="말")
+async def select(interaction: discord.Interaction, title: str):
+    try:
+        data = load_data()
+        if title in data:
+            del data[title]
+            save_data(data)
+            await interaction.response.send_message("기억속에서 지웠어요.")
+        else:
+            await interaction.response.send_message("배운적이 없어요..")
     except Exception as e:
         await interaction.response.send_message("오류 발생")
 
