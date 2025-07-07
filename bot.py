@@ -19,6 +19,7 @@ import os
 from dotenv import load_dotenv
 import json
 from datetime import datetime
+import re
 
 load_dotenv()
 DATA_FILE = "data.json"
@@ -54,6 +55,11 @@ async def ping_self():
 
 db = client["test"]
 collection = db["test"]
+
+def clean_text(text):
+    text = re.sub(r'<.*?>', '', text)
+    text = re.sub(r'\(.*?\)', '', text)
+    return text
 
 @bot.event
 async def on_ready():
@@ -234,12 +240,19 @@ async def select(interaction: discord.Interaction):
                 if response.status == 200:
                     data = await response.json()
                     pretty = json.dumps(data, ensure_ascii=False, indent=2)
-                    if data["mealServiceDietInfo"][0]["head"][0]["list_total_count"] == 1:
-                        await interaction.response.send_message(f"```{data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"]}```")
-                    elif data["mealServiceDietInfo"][0]["head"][0]["list_total_count"] == 2:
-                        await interaction.response.send_message(f"```{data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"]}\n{data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"]}```")
-                    elif data["mealServiceDietInfo"][0]["head"][0]["list_total_count"] == 3:
-                        await interaction.response.send_message(f"```{data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"]}\n{data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"]}\n{data["mealServiceDietInfo"][1]["row"][2]["DDISH_NM"]}```")
+                    count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
+                    if count == 1:
+                        text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
+                        await interaction.response.send_message(f"```{text1}```")
+                    elif count == 2:
+                        text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
+                        text2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"])
+                        await interaction.response.send_message(f"```{text1}\n{text2}```")
+                    elif count == 3:
+                        text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
+                        text2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"])
+                        text3 = clean_text(data["mealServiceDietInfo"][1]["row"][2]["DDISH_NM"])
+                        await interaction.response.send_message(f"```{text1}\n{text2}\n{text3}```")
                 else:
                     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
