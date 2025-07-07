@@ -190,17 +190,33 @@ async def select(interaction: discord.Interaction, title: str, content: str):
         await interaction.response.send_message("오류 발생")
 
 
-@tree.command(name="학습보기", description="배움")
-@app_commands.describe(title="말")
-async def select(interaction: discord.Interaction, title: str):
+# @tree.command(name="학습보기", description="배움")
+# @app_commands.describe(title="말")
+# async def select(interaction: discord.Interaction, title: str):
+#     try:
+#         data = load_data()
+#         if title in data:
+#             await interaction.response.send_message(data[title])
+#         else:
+#             await interaction.response.send_message("이거는 안 배웠어요..")
+#     except Exception as e:
+#         await interaction.response.send_message("오류 발생")
+
+
+@bot.event
+async def on_message(message):
     try:
-        data = load_data()
-        if title in data:
-            await interaction.response.send_message(data[title])
-        else:
-            await interaction.response.send_message("이거는 안 배웠어요..")
+        if message.author == bot.user:
+            return
+        if message.content.startswith("_"):
+            title = message[1:]
+            data = load_data()
+            if title in data:
+                await message.channel.send(data[title])
+            else:
+                await message.channel.send("이거는 안 배웠어요..")
     except Exception as e:
-        await interaction.response.send_message("오류 발생")
+        await message.channel.send("오류 발생")
 
 
 @tree.command(name="학습전체보기", description="배움")
