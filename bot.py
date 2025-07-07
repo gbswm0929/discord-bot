@@ -239,6 +239,6 @@ async def select(interaction: discord.Interaction):
                 # else:
                 #     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
-        await interaction.response.send_message("오류 발생", ephemeral=True)
+        await interaction.response.send_message(f"오류 발생 {e}", ephemeral=True)
 
 bot.run(os.getenv("token"))
