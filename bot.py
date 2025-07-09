@@ -190,31 +190,17 @@ async def select(interaction: discord.Interaction, title: str, content: str):
         await interaction.response.send_message("오류 발생")
 
 
-# @tree.command(name="학습보기", description="배움")
-# @app_commands.describe(title="말")
-# async def select(interaction: discord.Interaction, title: str):
-#     try:
-#         data = load_data()
-#         if title in data:
-#             await interaction.response.send_message(data[title])
-#         else:
-#             await interaction.response.send_message("이거는 안 배웠어요..")
-#     except Exception as e:
-#         await interaction.response.send_message("오류 발생")
-
-
 @bot.event
 async def on_message(message):
     try:
         if message.author == bot.user:
             return
-        if message.content.startswith("_"):
-            title = message[1:]
-            data = load_data()
-            if title in data:
-                await message.channel.send(data[title])
-            else:
-                await message.channel.send("이거는 안 배웠어요..")
+        title = message.content
+        data = load_data()
+        if title in data:
+            await message.channel.send(data[title])
+        else:
+            await message.channel.send("이거는 안 배웠어요..")
     except Exception as e:
         await message.channel.send("오류 발생")
 
@@ -224,7 +210,7 @@ async def select(interaction: discord.Interaction):
     try:
         data = load_data()
         if data:
-            result = '\n'.join([f'- {k}: {v}' for k, v in data.items()])
+            result = '\n'.join([f'{k}: {v}' for k, v in data.items()])
             await interaction.response.send_message(result)
         else:
             await interaction.response.send_message("배운적이 없어요..")
@@ -281,5 +267,17 @@ async def select(interaction: discord.Interaction):
                     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
         await interaction.response.send_message(f"오류 발생 {e}", ephemeral=True)
+
+
+@tree.command(name="닉네임변경", description="닉네임 변경")
+@app_commands.describe(nick="닉네임")
+async def nickname(interaction: discord.Interaction, nick: str):
+    try:
+        member = interaction.user
+        await member.edit(nick=nick)
+    except discord.Forbidden:
+        await interaction.response.send_message("권한이 없어요.")
+    except Exception as e:
+        await interaction.response.send_message("오류 발생")
 
 bot.run(os.getenv("token"))
