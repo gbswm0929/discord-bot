@@ -286,7 +286,7 @@ async def nickname(interaction: discord.Interaction, oauth: str):
         url=f"https://diverse-cecily-ab5a4d14.koyeb.app/signin?oauthnum={oauth}"
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
-                await interaction.response.send_message(response)
+                await interaction.response.send_message(f"{response.status}\n{response}")
                 # if response.status == 200:
                 #     data = await response.json()
                 #     pretty = json.dumps(data, ensure_ascii=False, indent=2)
