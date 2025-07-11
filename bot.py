@@ -199,8 +199,6 @@ async def on_message(message):
         data = load_data()
         if title in data:
             await message.channel.send(data[title])
-        else:
-            await message.channel.send("이거는 안 배웠어요..")
     except Exception as e:
         await message.channel.send("오류 발생")
 
@@ -277,6 +275,42 @@ async def nickname(interaction: discord.Interaction, nick: str):
         await member.edit(nick=nick)
     except discord.Forbidden:
         await interaction.response.send_message("권한이 없어요.")
+    except Exception as e:
+        await interaction.response.send_message("오류 발생")
+
+
+@tree.command(name="인증", description="인증")
+@app_commands.describe(oauth="인증번호")
+async def nickname(interaction: discord.Interaction, oauth: str):
+    try:
+        url=f"https://diverse-cecily-ab5a4d14.koyeb.app/signin?oauthnum={oauth}"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                await interaction.response.send_message(response)
+                # if response.status == 200:
+                #     data = await response.json()
+                #     pretty = json.dumps(data, ensure_ascii=False, indent=2)
+                #     count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
+                #     if count == 1:
+                #         type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
+                #         text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
+                #         await interaction.response.send_message(f"**{type1}**```{text1}```")
+                #     elif count == 2:
+                #         type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
+                #         type2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["MMEAL_SC_NM"])
+                #         text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
+                #         text2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"])
+                #         await interaction.response.send_message(f"**{type1}**```{text1}```\n**{type2}**```{text2}```")
+                #     elif count == 3:
+                #         type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
+                #         type2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["MMEAL_SC_NM"])
+                #         type3 = clean_text(data["mealServiceDietInfo"][1]["row"][2]["MMEAL_SC_NM"])
+                #         text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
+                #         text2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"])
+                #         text3 = clean_text(data["mealServiceDietInfo"][1]["row"][2]["DDISH_NM"])
+                #         await interaction.response.send_message(f"**{type1}**```{text1}```\n**{type2}**```{text2}```\n**{type3}**```{text3}```")
+                # else:
+                #     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
         await interaction.response.send_message("오류 발생")
 
