@@ -242,7 +242,7 @@ async def select(interaction: discord.Interaction):
                 if response.status == 200:
                     data = await response.json()
                     pretty = json.dumps(data, ensure_ascii=False, indent=2)
-                    if not data["RESULT"]:
+                    if data["mealServiceDietInfo"]:
                         count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
                         if count == 1:
                             type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
@@ -287,6 +287,7 @@ async def nickname(interaction: discord.Interaction, nick: str):
 async def nickname(interaction: discord.Interaction, oauth: str):
     try:
         url=f"{os.getenv("url2")}{oauth}"
+        # https://www.roblox.com/ko/users/{userid}/profile
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status == 200:
