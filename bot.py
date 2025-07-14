@@ -18,9 +18,10 @@ from bson import ObjectId
 import os
 from dotenv import load_dotenv
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 import re
+import time
 
 load_dotenv()
 DATA_FILE = "data.json"
@@ -54,6 +55,51 @@ async def ping_self():
             pass
         await asyncio.sleep(1200)
 
+async def wait():
+    now = datetime.now()
+    nowtime = now.replace(hour=7, minute=0, second=0, microsecond=0)
+    if now < nowtime:
+        delta = nowtime - now
+    else:
+        nexttime = nowtime + timedelta(days=1)
+        delta = nexttime - now
+    return delta.total_seconds()
+
+async def lunch():
+    channel = bot.got_channel(1388874718257348791)
+    if channel:
+        try:
+            seoul = pytz.timezone("Asia/Seoul")
+            while True:
+                now = datetime.now(seoul)
+                if now.hour == 7:
+                    today = datetime.now(seoul).strftime('%Y%m%d')
+                    url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
+                    async with aiohttp.ClientSession() as session:
+                        async with session.get(url) as response:
+                            if response.status == 200:
+                                data = await response.json()
+                                pretty = json.dumps(data, ensure_ascii=False, indent=2)
+                                if "mealServiceDietInfo" in data:
+                                    count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
+                                    text = ""
+                                    for i in range(0, count):
+                                        type1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["MMEAL_SC_NM"])
+                                        text1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["DDISH_NM"])
+                                        text += f'**{type1}**```{text1}```\n'
+                                    await channel.send(text)
+                                else:
+                                    await channel.send("내용이 없어요.")
+                            else:
+                                await channel.send(f"요청 실패 {response.status}")
+                    sleep_time = wait()
+                    time.sleep(sleep_time)
+                else:
+                    sleep_time = wait()
+                    time.sleep(sleep_time)
+        except Exception as e:
+            await channel.send(f"오류 발생 {e}", ephemeral=True)
+
 db = client["test"]
 collection = db["test"]
 
@@ -69,6 +115,7 @@ async def on_ready():
     print("준비")
     bot.loop.create_task(start_web_server())
     bot.loop.create_task(ping_self())
+    bot.loop.create_task(lunch())
 
 
 @tree.command(name="청소", description="메시지 삭제")
