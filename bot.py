@@ -261,6 +261,30 @@ async def select(interaction: discord.Interaction):
 @tree.command(name="닉네임변경", description="닉네임 변경")
 @app_commands.describe(nick="닉네임")
 async def nickname(interaction: discord.Interaction, nick: str):
+    # member = interaction.user
+    # bot_member = interaction.guild.me  # 봇의 GuildMember 객체
+
+    # # 권한 체크: 봇이 닉네임 관리 권한을 가지고 있는가?
+    # has_permission = bot_member.guild_permissions.manage_nicknames
+
+    # # 역할 계층 체크: 봇의 역할이 대상 유저보다 높은가?
+    # bot_top_role = bot_member.top_role
+    # user_top_role = member.top_role
+    # is_higher = bot_top_role > user_top_role
+
+    # if not has_permission:
+    #     await interaction.response.send_message("❌ 닉네임을 변경할 권한이 없어요 (Manage Nicknames)", ephemeral=True)
+    #     return
+
+    # if not is_higher and member != bot_member:
+    #     await interaction.response.send_message("❌ 역할 순위 때문에 해당 사용자의 닉네임을 변경할 수 없어요.", ephemeral=True)
+    #     return
+
+    # try:
+    #     await member.edit(nick=이름)
+    #     await interaction.response.send_message(f"✅ {member.mention}님의 닉네임이 **{이름}**(으)로 변경되었어요!", ephemeral=True)
+    # except Exception as e:
+    #     await interaction.response.send_message(f"⚠️ 오류 발생: {str(e)}", ephemeral=True)
     try:
         member = interaction.user
         await member.edit(nick=nick)
@@ -284,6 +308,8 @@ async def nickname(interaction: discord.Interaction, oauth: str):
                     embed.add_field(name="이름", value=data["username"])
                     embed.add_field(name="아이디", value=data["userid"])
                     embed.add_field(name="링크", value=f"[바로가기](https://www.roblox.com/ko/users/{data["userid"]})")
+                    member = interaction.user
+                    await member.edit(nick=data["username"])
                     await interaction.response.send_message(embed=embed)
                 else:
                     await interaction.response.send_message(f"요청 실패 {response.status}")
