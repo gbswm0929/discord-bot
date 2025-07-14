@@ -21,7 +21,7 @@ import json
 from datetime import datetime, timedelta
 import pytz
 import re
-import time
+# import time
 
 load_dotenv()
 DATA_FILE = "data.json"
@@ -70,7 +70,7 @@ async def lunch():
     if channel:
         try:
             seoul = pytz.timezone("Asia/Seoul")
-            while True:
+            while not bot.is_closed():
                 now = datetime.now(seoul)
                 if now.hour == 7:
                     today = datetime.now(seoul).strftime('%Y%m%d')
@@ -93,10 +93,10 @@ async def lunch():
                             else:
                                 await channel.send(f"요청 실패 {response.status}")
                     sleep_time = wait()
-                    time.sleep(sleep_time)
+                    asyncio.sleep(sleep_time)
                 else:
                     sleep_time = wait()
-                    time.sleep(sleep_time)
+                    asyncio.sleep(sleep_time)
         except Exception as e:
             await channel.send(f"오류 발생 {e}", ephemeral=True)
 
