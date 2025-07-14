@@ -57,7 +57,7 @@ async def ping_self():
 
 async def wait():
     now = datetime.now()
-    nowtime = now.replace(hour=8, minute=0, second=0, microsecond=0)
+    nowtime = now.replace(hour=7, minute=0, second=0, microsecond=0)
     if now < nowtime:
         delta = nowtime - now
     else:
@@ -66,13 +66,13 @@ async def wait():
     return delta.total_seconds()
 
 async def lunch():
-    channel = bot.get_channel(1388874718257348791)
+    channel = bot.get_channel(int(os.getenv("channel")))
     if channel:
         try:
             seoul = pytz.timezone("Asia/Seoul")
             while not bot.is_closed():
                 now = datetime.now(seoul)
-                if now.hour == 8:
+                if now.hour == 7:
                     today = datetime.now(seoul).strftime('%Y%m%d')
                     url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
                     async with aiohttp.ClientSession() as session:
