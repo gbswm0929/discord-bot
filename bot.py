@@ -66,7 +66,7 @@ async def wait():
     return delta.total_seconds()
 
 async def lunch():
-    channel = bot.got_channel(1388874718257348791)
+    channel = bot.get_channel(1388874718257348791)
     if channel:
         try:
             seoul = pytz.timezone("Asia/Seoul")
@@ -92,11 +92,8 @@ async def lunch():
                                     await channel.send("내용이 없어요.")
                             else:
                                 await channel.send(f"요청 실패 {response.status}")
-                    sleep_time = wait()
-                    asyncio.sleep(sleep_time)
-                else:
-                    sleep_time = wait()
-                    asyncio.sleep(sleep_time)
+                sleep_time = wait()
+                asyncio.sleep(sleep_time)
         except Exception as e:
             await channel.send(f"오류 발생 {e}", ephemeral=True)
 
