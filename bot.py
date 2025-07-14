@@ -284,7 +284,7 @@ async def nickname(interaction: discord.Interaction, oauth: str):
                     embed.add_field(name="이름", value=data["username"])
                     embed.add_field(name="아이디", value=data["userid"])
                     embed.add_field(name="링크", value=f"[바로가기](https://www.roblox.com/ko/users/{data["userid"]})")
-                    await interaction.response.send_message(data)
+                    await interaction.response.send_message(embed=embed)
                 else:
                     await interaction.response.send_message(f"요청 실패 {response.status}")
     except Exception as e:
