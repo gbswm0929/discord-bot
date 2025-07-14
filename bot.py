@@ -250,24 +250,6 @@ async def select(interaction: discord.Interaction):
                             text1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["DDISH_NM"])
                             text += f'**{type1}**```{text1}```\n'
                         await interaction.response.send_message(text)
-                        # if count == 1:
-                        #     type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
-                        #     text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
-                        #     await interaction.response.send_message(f"**{type1}**```{text1}```")
-                        # elif count == 2:
-                        #     type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
-                        #     type2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["MMEAL_SC_NM"])
-                        #     text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
-                        #     text2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"])
-                        #     await interaction.response.send_message(f"**{type1}**```{text1}```\n**{type2}**```{text2}```")
-                        # elif count == 3:
-                        #     type1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["MMEAL_SC_NM"])
-                        #     type2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["MMEAL_SC_NM"])
-                        #     type3 = clean_text(data["mealServiceDietInfo"][1]["row"][2]["MMEAL_SC_NM"])
-                        #     text1 = clean_text(data["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"])
-                        #     text2 = clean_text(data["mealServiceDietInfo"][1]["row"][1]["DDISH_NM"])
-                        #     text3 = clean_text(data["mealServiceDietInfo"][1]["row"][2]["DDISH_NM"])
-                        #     await interaction.response.send_message(f"**{type1}**```{text1}```\n**{type2}**```{text2}```\n**{type3}**```{text3}```")
                     else:
                         await interaction.response.send_message("내용이 없어요.")
                 else:
@@ -282,6 +264,7 @@ async def nickname(interaction: discord.Interaction, nick: str):
     try:
         member = interaction.user
         await member.edit(nick=nick)
+        await interaction.response.send_message("닉네임 변경을 완료했어요.")
     except discord.Forbidden:
         await interaction.response.send_message("권한이 없어요.")
     except Exception as e:
@@ -293,11 +276,14 @@ async def nickname(interaction: discord.Interaction, nick: str):
 async def nickname(interaction: discord.Interaction, oauth: str):
     try:
         url=f"{os.getenv("url2")}{oauth}"
-        # https://www.roblox.com/ko/users/{userid}/profile
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status == 200:
                     data = await response.json()
+                    embed = discord.Embed(title = "유저정보", description="유저 정보", color=0x00ff00)
+                    embed.add_field(name="이름", value=data["username"])
+                    embed.add_field(name="아이디", value=data["userid"])
+                    embed.add_field(name="링크", value=f"[바로가기](https://www.roblox.com/ko/users/{data["userid"]})")
                     await interaction.response.send_message(data)
                 else:
                     await interaction.response.send_message(f"요청 실패 {response.status}")
