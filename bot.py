@@ -56,7 +56,8 @@ async def ping_self():
         await asyncio.sleep(1200)
 
 async def wait():
-    now = datetime.now()
+    seoul = pytz.timezone("Asia/Seoul")
+    now = datetime.now(seoul)
     nowtime = now.replace(hour=7, minute=0, second=0, microsecond=0)
     if now < nowtime:
         delta = nowtime - now
@@ -95,7 +96,7 @@ async def lunch():
                 sleep_time = wait()
                 await asyncio.sleep(sleep_time)
         except Exception as e:
-            await channel.send(f"오류 발생 {e}", ephemeral=True)
+            await channel.send(f"오류 발생 {e}")
 
 db = client["test"]
 collection = db["test"]
