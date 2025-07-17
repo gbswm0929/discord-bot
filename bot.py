@@ -96,7 +96,7 @@ async def lunch():
                                     await channel.send("내용이 없어요.")
                             else:
                                 await channel.send(f"요청 실패 {response.status}")
-                sleep_time = wait()
+                sleep_time = await wait()
                 print(sleep_time)
                 await asyncio.sleep(sleep_time)
         except Exception as e:
