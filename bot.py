@@ -102,6 +102,14 @@ async def lunch():
         except Exception as e:
             await channel.send(f"오류 발생 {e}")
 
+async def hello():
+    channel = bot.get_channel(int(os.getenv("channel")))
+    print(channel)
+    if channel:
+        await channel.send("하이")
+    else:
+        print("X")
+
 db = client["test"]
 collection = db["test"]
 
@@ -118,6 +126,7 @@ async def on_ready():
     bot.loop.create_task(start_web_server())
     bot.loop.create_task(ping_self())
     bot.loop.create_task(lunch())
+    bot.loop.create_task(hello())
 
 
 @tree.command(name="청소", description="메시지 삭제")
