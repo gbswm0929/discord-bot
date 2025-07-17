@@ -100,7 +100,7 @@ async def lunch():
                 print(sleep_time)
                 await asyncio.sleep(sleep_time)
         except Exception as e:
-            await channel.send(f"오류 발생 {e}")
+            await channel.send(f"급식 오류 발생 {e}")
 
 async def hello():
     channel = bot.get_channel(int(os.getenv("channel")))
