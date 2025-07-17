@@ -1,6 +1,7 @@
 import aiohttp
 from aiohttp import web
 async def health_check(request):
+    print("health_check")
     return web.Response(text="OK", status=200)
 
 async def start_web_server():
@@ -10,6 +11,7 @@ async def start_web_server():
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', 8000)
     await site.start()
+    print("서버 준비")
 import discord
 import asyncio
 from discord import app_commands
@@ -73,6 +75,7 @@ async def lunch():
             seoul = pytz.timezone("Asia/Seoul")
             while not bot.is_closed():
                 now = datetime.now(seoul)
+                print(now)
                 if now.hour == 7:
                     today = datetime.now(seoul).strftime('%Y%m%d')
                     url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
@@ -94,6 +97,7 @@ async def lunch():
                             else:
                                 await channel.send(f"요청 실패 {response.status}")
                 sleep_time = wait()
+                print(sleep_time)
                 await asyncio.sleep(sleep_time)
         except Exception as e:
             await channel.send(f"오류 발생 {e}")
