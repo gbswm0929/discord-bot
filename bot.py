@@ -1,7 +1,6 @@
 import aiohttp
 from aiohttp import web
 async def health_check(request):
-    print("health_check")
     return web.Response(text="OK", status=200)
 
 async def start_web_server():
@@ -11,7 +10,6 @@ async def start_web_server():
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', 8000)
     await site.start()
-    print("서버 준비")
 import discord
 import asyncio
 from discord import app_commands
@@ -73,42 +71,45 @@ async def lunch():
     if channel:
         try:
             seoul = pytz.timezone("Asia/Seoul")
+            weekdays = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
             while not bot.is_closed():
                 now = datetime.now(seoul)
-                print(now)
                 if now.hour == 7:
-                    today = datetime.now(seoul).strftime('%Y%m%d')
-                    url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
-                    async with aiohttp.ClientSession() as session:
-                        async with session.get(url) as response:
-                            if response.status == 200:
-                                data = await response.json()
-                                pretty = json.dumps(data, ensure_ascii=False, indent=2)
-                                if "mealServiceDietInfo" in data:
-                                    count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
-                                    text = ""
-                                    for i in range(0, count):
-                                        type1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["MMEAL_SC_NM"])
-                                        text1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["DDISH_NM"])
-                                        text += f'**{type1}**```{text1}```\n'
-                                    await channel.send(text)
+                    today_weekday_index = 4 - now.weekday()
+                    if today_weekday_index < 5:
+                        text = ""
+                        if today_weekday_index == 0:
+                            text += "## D - Day\n"
+                        elif today_weekday_index > 0:
+                            text += f"## D - {today_weekday_index}\n"
+                        today = now.strftime('%Y%m%d')
+                        text += f"### {today[:4]}/{today[4:6]}/{today[6:]}\n\n"
+                        url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
+                        async with aiohttp.ClientSession() as session:
+                            async with session.get(url) as response:
+                                if response.status == 200:
+                                    data = await response.json()
+                                    pretty = json.dumps(data, ensure_ascii=False, indent=2)
+                                    if "mealServiceDietInfo" in data:
+                                        count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
+                                        for i in range(0, count):
+                                            type1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["MMEAL_SC_NM"])
+                                            text1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["DDISH_NM"])
+                                            text += f'**{type1}**```{text1}```\n'
+                                        await channel.send(text)
+                                    else:
+                                        await channel.send(f"{text} 내용이 없어요.")
                                 else:
-                                    await channel.send("내용이 없어요.")
-                            else:
-                                await channel.send(f"요청 실패 {response.status}")
+                                    await channel.send(f"요청 실패 {response.status}")
                 sleep_time = await wait()
-                print(sleep_time)
                 await asyncio.sleep(sleep_time)
         except Exception as e:
             await channel.send(f"급식 오류 발생 {e}")
 
 async def hello():
     channel = bot.get_channel(int(os.getenv("channel")))
-    print(channel)
     if channel:
-        await channel.send("하이")
-    else:
-        print("X")
+        await channel.send("집가고싶다.")
 
 db = client["test"]
 collection = db["test"]
