@@ -73,10 +73,14 @@ async def lunch():
             seoul = pytz.timezone("Asia/Seoul")
             weekdays = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
             while not bot.is_closed():
+                print("while")
                 now = datetime.now(seoul)
                 if now.hour == 7:
-                    today_weekday_index = 4 - now.weekday()
+                    print("hour check")
+                    today_weekday_index = now.weekday()
                     if today_weekday_index < 5:
+                        print("weekday check")
+                        today_weekday_index -= 4
                         text = ""
                         if today_weekday_index == 0:
                             text += "## D - Day\n"
@@ -92,9 +96,10 @@ async def lunch():
                                     pretty = json.dumps(data, ensure_ascii=False, indent=2)
                                     if "mealServiceDietInfo" in data:
                                         count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
+                                        data = data["mealServiceDietInfo"][1]["row"]
                                         for i in range(0, count):
-                                            type1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["MMEAL_SC_NM"])
-                                            text1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["DDISH_NM"])
+                                            type1 = data[i]["MMEAL_SC_NM"]
+                                            text1 = clean_text(data[i]["DDISH_NM"])
                                             text += f'**{type1}**```{text1}```\n'
                                         await channel.send(text)
                                     else:
