@@ -84,8 +84,8 @@ async def lunch():
                         text = ""
                         if today_weekday_index == 0:
                             text += "## D - Day\n"
-                        elif today_weekday_index > 0:
-                            text += f"## D - {today_weekday_index}\n"
+                        elif today_weekday_index < 0:
+                            text += f"## D - {-today_weekday_index}\n"
                         today = now.strftime('%Y%m%d')
                         text += f"### {today[:4]}/{today[4:6]}/{today[6:]}\n\n"
                         url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
