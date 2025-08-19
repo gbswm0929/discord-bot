@@ -102,14 +102,14 @@ async def lunch():
                                             text1 = clean_text(data[i]["DDISH_NM"])
                                             text += f'**{type1}**```{text1}```\n'
                                         await channel.send(text)
-                                    else:
-                                        await channel.send(f"{text} 내용이 없어요.")
-                                else:
-                                    await channel.send(f"요청 실패 {response.status}")
+                                    # else:
+                                    #     await channel.send(f"{text} 내용이 없어요.")
+                                # else:
+                                #     await channel.send(f"요청 실패 {response.status}")
                 sleep_time = await wait()
                 await asyncio.sleep(sleep_time)
         except Exception as e:
-            await channel.send(f"급식 오류 발생 {e}")
+            print(f"급식 오류 발생 {e}")
 
 async def hello():
     channel = bot.get_channel(int(os.getenv("channel")))
