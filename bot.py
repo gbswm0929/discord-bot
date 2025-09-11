@@ -71,15 +71,11 @@ async def lunch():
     if channel:
         try:
             seoul = pytz.timezone("Asia/Seoul")
-            weekdays = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
             while not bot.is_closed():
-                print("while")
                 now = datetime.now(seoul)
                 if now.hour == 7:
-                    print("hour check")
                     today_weekday_index = now.weekday()
                     if today_weekday_index < 5:
-                        print("weekday check")
                         today_weekday_index -= 4
                         text = ""
                         if today_weekday_index == 0:
@@ -298,6 +294,7 @@ async def select(interaction: discord.Interaction, title: str):
 @tree.command(name="급식", description="급식")
 async def select(interaction: discord.Interaction):
     try:
+        await interaction.response.defer()
         seoul = pytz.timezone("Asia/Seoul")
         today = datetime.now(seoul).strftime('%Y%m%d')
         url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
@@ -313,13 +310,13 @@ async def select(interaction: discord.Interaction):
                             type1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["MMEAL_SC_NM"])
                             text1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["DDISH_NM"])
                             text += f'**{type1}**```{text1}```\n'
-                        await interaction.response.send_message(text)
+                        await interaction.followup.send(text)
                     else:
-                        await interaction.response.send_message("내용이 없어요.")
+                        await interaction.followup.send("내용이 없어요.")
                 else:
-                    await interaction.response.send_message(f"요청 실패 {response.status}")
+                    await interaction.followup.send(f"요청 실패 {response.status}")
     except Exception as e:
-        await interaction.response.send_message(f"오류 발생 {e}", ephemeral=True)
+        await interaction.followup.send(f"오류 발생 {e}", ephemeral=True)
 
 
 @tree.command(name="닉네임변경", description="닉네임 변경")
