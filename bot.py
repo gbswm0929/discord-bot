@@ -53,7 +53,7 @@ async def ping_self():
                 await s.get(os.getenv("url"))
         except:
             pass
-        await asyncio.sleep(1200)
+        await asyncio.sleep(600)
 
 async def wait():
     seoul = pytz.timezone("Asia/Seoul")
