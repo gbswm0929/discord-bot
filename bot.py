@@ -66,7 +66,7 @@ async def wait():
         delta = nexttime - now
     return delta.total_seconds()
 
-lunch_text = ""
+lunch_text = "a"
 
 async def lunch():
     channel = bot.get_channel(int(os.getenv("channel")))
@@ -75,7 +75,7 @@ async def lunch():
             seoul = pytz.timezone("Asia/Seoul")
             while not bot.is_closed():
                 now = datetime.now(seoul)
-                if now.hour == 7 or lunch_text == "":
+                if now.hour == 7 or lunch_text == "a":
                     today_weekday_index = now.weekday()
                     if today_weekday_index < 5:
                         today_weekday_index -= 4
