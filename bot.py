@@ -96,6 +96,7 @@ async def lunch():
                                     if "mealServiceDietInfo" in data:
                                         count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
                                         data = data["mealServiceDietInfo"][1]["row"]
+                                        global lunch_text
                                         for i in range(0, count):
                                             type1 = data[i]["MMEAL_SC_NM"]
                                             text1 = clean_text(data[i]["DDISH_NM"])
