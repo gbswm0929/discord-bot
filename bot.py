@@ -76,6 +76,7 @@ async def lunch():
             while not bot.is_closed():
                 now = datetime.now(seoul)
                 if now.hour == 7 or lunch_text == "a":
+                    print("스ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ타ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ트ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
                     today_weekday_index = now.weekday()
                     if today_weekday_index < 5:
                         today_weekday_index -= 4
@@ -98,8 +99,9 @@ async def lunch():
                                         for i in range(0, count):
                                             type1 = data[i]["MMEAL_SC_NM"]
                                             text1 = clean_text(data[i]["DDISH_NM"])
-                                            text += f'**{type1}**```{text1}```\n'
-                                        lunch_text = text
+                                            bob = f'**{type1}**```{text1}```\n'
+                                            text += bob
+                                            lunch_text += bob
                                         await channel.send(text)
                                     # else:
                                     #     await channel.send(f"{text} 내용이 없어요.")
