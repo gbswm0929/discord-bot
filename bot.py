@@ -66,7 +66,7 @@ async def wait():
         delta = nexttime - now
     return delta.total_seconds()
 
-lunch_text = "a"
+lunch_text = ""
 
 async def lunch():
     channel = bot.get_channel(int(os.getenv("channel")))
@@ -76,8 +76,7 @@ async def lunch():
             while not bot.is_closed():
                 now = datetime.now(seoul)
                 global lunch_text
-                if now.hour == 7 or lunch_text == "a":
-                    print("스ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ타ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ트ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+                if now.hour == 7 or lunch_text == "":
                     today_weekday_index = now.weekday()
                     if today_weekday_index < 5:
                         today_weekday_index -= 4
@@ -300,8 +299,9 @@ async def select(interaction: discord.Interaction, title: str):
 @tree.command(name="급식", description="급식")
 async def select(interaction: discord.Interaction):
     try:
-        await interaction.response.defer()
-        await interaction.followup.send(lunch_text)
+        # await interaction.response.defer()
+        await interaction.response.send_message(lunch_text)
+        # await interaction.followup.send(lunch_text)
         # seoul = pytz.timezone("Asia/Seoul")
         # today = datetime.now(seoul).strftime('%Y%m%d')
         # url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
