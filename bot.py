@@ -75,6 +75,7 @@ async def lunch():
             seoul = pytz.timezone("Asia/Seoul")
             while not bot.is_closed():
                 now = datetime.now(seoul)
+                global lunch_text
                 if now.hour == 7 or lunch_text == "a":
                     print("스ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ타ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ트ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
                     today_weekday_index = now.weekday()
@@ -96,7 +97,6 @@ async def lunch():
                                     if "mealServiceDietInfo" in data:
                                         count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
                                         data = data["mealServiceDietInfo"][1]["row"]
-                                        global lunch_text
                                         for i in range(0, count):
                                             type1 = data[i]["MMEAL_SC_NM"]
                                             text1 = clean_text(data[i]["DDISH_NM"])
