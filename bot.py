@@ -66,6 +66,8 @@ async def wait():
         delta = nexttime - now
     return delta.total_seconds()
 
+lunch_text = ""
+
 async def lunch():
     channel = bot.get_channel(int(os.getenv("channel")))
     if channel:
@@ -73,7 +75,7 @@ async def lunch():
             seoul = pytz.timezone("Asia/Seoul")
             while not bot.is_closed():
                 now = datetime.now(seoul)
-                if now.hour == 7:
+                if now.hour == 7 or lunch_text == "":
                     today_weekday_index = now.weekday()
                     if today_weekday_index < 5:
                         today_weekday_index -= 4
@@ -97,6 +99,7 @@ async def lunch():
                                             type1 = data[i]["MMEAL_SC_NM"]
                                             text1 = clean_text(data[i]["DDISH_NM"])
                                             text += f'**{type1}**```{text1}```\n'
+                                        lunch_text = text
                                         await channel.send(text)
                                     # else:
                                     #     await channel.send(f"{text} 내용이 없어요.")
@@ -294,27 +297,28 @@ async def select(interaction: discord.Interaction, title: str):
 @tree.command(name="급식", description="급식")
 async def select(interaction: discord.Interaction):
     try:
-        await interaction.response.defer()
-        seoul = pytz.timezone("Asia/Seoul")
-        today = datetime.now(seoul).strftime('%Y%m%d')
-        url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    pretty = json.dumps(data, ensure_ascii=False, indent=2)
-                    if "mealServiceDietInfo" in data:
-                        count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
-                        text = ""
-                        for i in range(0, count):
-                            type1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["MMEAL_SC_NM"])
-                            text1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["DDISH_NM"])
-                            text += f'**{type1}**```{text1}```\n'
-                        await interaction.followup.send(text)
-                    else:
-                        await interaction.followup.send("내용이 없어요.")
-                else:
-                    await interaction.followup.send(f"요청 실패 {response.status}")
+        await interaction.response.send_message(lunch_text)
+        # await interaction.response.defer()
+        # seoul = pytz.timezone("Asia/Seoul")
+        # today = datetime.now(seoul).strftime('%Y%m%d')
+        # url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
+        # async with aiohttp.ClientSession() as session:
+        #     async with session.get(url) as response:
+        #         if response.status == 200:
+        #             data = await response.json()
+        #             pretty = json.dumps(data, ensure_ascii=False, indent=2)
+        #             if "mealServiceDietInfo" in data:
+        #                 count = data["mealServiceDietInfo"][0]["head"][0]["list_total_count"]
+        #                 text = ""
+        #                 for i in range(0, count):
+        #                     type1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["MMEAL_SC_NM"])
+        #                     text1 = clean_text(data["mealServiceDietInfo"][1]["row"][i]["DDISH_NM"])
+        #                     text += f'**{type1}**```{text1}```\n'
+        #                 await interaction.followup.send(text)
+        #             else:
+        #                 await interaction.followup.send("내용이 없어요.")
+        #         else:
+        #             await interaction.followup.send(f"요청 실패 {response.status}")
     except Exception as e:
         await interaction.followup.send(f"오류 발생 {e}", ephemeral=True)
 
