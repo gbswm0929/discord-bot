@@ -297,8 +297,8 @@ async def select(interaction: discord.Interaction, title: str):
 @tree.command(name="급식", description="급식")
 async def select(interaction: discord.Interaction):
     try:
-        await interaction.response.send_message(lunch_text)
-        # await interaction.response.defer()
+        await interaction.response.defer()
+        await interaction.followup.send(lunch_text)
         # seoul = pytz.timezone("Asia/Seoul")
         # today = datetime.now(seoul).strftime('%Y%m%d')
         # url = f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE={os.getenv("ATPT_OFCDC_SC_CODE")}&SD_SCHUL_CODE={os.getenv("SD_SCHUL_CODE")}&MLSV_YMD={today}&Type=Json"
